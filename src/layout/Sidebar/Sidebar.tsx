@@ -1,10 +1,12 @@
 import 'antd/dist/antd.css';
-import React from 'react';
+import React, { useContext } from 'react';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import { getUnique } from '../../hooks/getUnique';
 import styled from 'styled-components';
-import { FolderOutlined, FormOutlined, PlusOutlined } from '@ant-design/icons';
+import { FormOutlined, HeartOutlined } from '@ant-design/icons';
+import CollectionContext from '../../context/CollectionContext';
+import Item from './Item/Item';
 const BOOKMARKS_QUERY = gql`
     {
         bookmarks {
@@ -38,9 +40,19 @@ const Container = styled.div`
 const Group = styled.div`
     &.group-item {
         display: flex;
+        align-items: center;
         div {
             padding-left: 20px;
         }
+    }
+    transition: 0.3s all ease;
+
+    &:hover {
+        cursor: pointer;
+        transform: translate(10px);
+    }
+    &.active {
+        color: lightblue;
     }
 `;
 
@@ -55,17 +67,9 @@ const CollectionContainer = styled.ul`
     font-size: 1.05em;
 `;
 
-const CollectionGroup = styled.li`
-    display: flex;
-    align-items: center;
-    margin: 10px auto;
-    div {
-        padding-left: 10px;
-        text-transform: capitalize;
-    }
-`;
 export const Sidebar = () => {
     const { error, data, loading } = useQuery(BOOKMARKS_QUERY);
+    const { collection, setCollection } = useContext(CollectionContext);
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -76,24 +80,22 @@ export const Sidebar = () => {
         <SidebarWrapper>
             <Container className='title-wrapper'>
                 <div className='title'>Bookmark Manager</div>
-                <div className='icon'>
-                    <PlusOutlined />
-                </div>
             </Container>
             <Container>
-                <Group className='group-item'>
-                    <FormOutlined />
-                    <div>All Bookmark ({data.bookmarks.data.length})</div>
+                <Group className={collection === '' ? 'active group-item' : 'group-item'}>
+                    {collection === '' ? <HeartOutlined /> : <FormOutlined />}
+
+                    <div
+                        onClick={() => {
+                            setCollection('');
+                        }}>
+                        All Bookmark ({data.bookmarks.data.length})
+                    </div>
                 </Group>
                 <StyledLabel>My Collections: </StyledLabel>
                 <CollectionContainer>
                     {getUnique(data.bookmarks.data).map((item: string, index: number) => {
-                        return (
-                            <CollectionGroup key={index}>
-                                <FolderOutlined />
-                                <div>{item}</div>
-                            </CollectionGroup>
-                        );
+                        return <Item item={item} key={index} />;
                     })}
                 </CollectionContainer>
             </Container>

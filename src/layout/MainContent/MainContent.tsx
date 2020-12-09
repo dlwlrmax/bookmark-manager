@@ -1,10 +1,11 @@
-import 'antd/dist/antd.css';
-import React from 'react';
-import { Button, Input } from 'antd';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-const { Search } = Input;
+import AddBookmark from './AddBookmark/AddBookmark';
+import CollectionContext from '../../context/CollectionContext';
+import ListItem from './ListItem/ListItem';
+
 const StyledHeader = styled.div`
     width: 100%;
     margin: 20px auto;
@@ -17,87 +18,47 @@ const Container = styled.div`
     color: #272727;
 `;
 
-const StyledSearch = styled(Search)`
-    width: 400px;
-`;
-
 const Title = styled.div`
     font-size: 1.8em;
     font-weight: 600;
     color: #272727;
-`;
-
-const ListContainer = styled.div``;
-const ListItem = styled.div`
-    display: flex;
-    margin: 30px 0;
-    .favicon {
-        padding-right: 20px;
-        display: flex;
-        align-items: center;
-    }
-    .info {
-        .title {
-            font-weight: 600;
-            font-size: 1.3em;
-            color: #464646;
-        }
-        .url {
-            font-size: 1.1em;
-            color: #868686;
-        }
-        .url:hover {
-            text-decoration: underline;
-            color: #2f7cc2;
-        }
-    }
+    text-transform: capitalize;
 `;
 
 const GET_BOOKMARK = gql`
     {
         bookmarks {
             data {
+                _id
                 title
                 url
+                collection
             }
         }
     }
 `;
 
 export default function MainContent() {
-    const { data, loading } = useQuery(GET_BOOKMARK);
+    const { data, loading, error } = useQuery(GET_BOOKMARK);
+    const { collection } = useContext(CollectionContext);
 
+    if (loading) {
+        return <div>loading</div>;
+    }
+    if (error) {
+        return <div>{error}</div>;
+    }
     return (
         <Container>
             <StyledHeader>
-                <StyledSearch placeholder='Search your bookmark' size='small' />
-                <Button>Add</Button>
+                <div>
+                    <Title>{collection ? collection : 'All bookmark'}</Title>
+                </div>
+                <AddBookmark />
             </StyledHeader>
-            <div>
-                <Title>All bookmark</Title>
-            </div>
+
             <hr />
-            {loading ? (
-                <div>Loading</div>
-            ) : (
-                <ListContainer>
-                    {data.bookmarks.data.map((item: any, index: number) => {
-                        return (
-                            <ListItem key={index}>
-                                <div className='favicon'>
-                                    <img src={`${item.url.match(/^https?:\/\/[^#?/]+/)}/favicon.ico`} alt='' width={32} />
-                                </div>
-                                <div className='info'>
-                                    <div className='title'>{item.title}</div>
-                                    <a href={item.url} target='_blank' rel='noreferrer' className='url'>
-                                        {item.url}
-                                    </a>
-                                </div>
-                            </ListItem>
-                        );
-                    })}
-                </ListContainer>
-            )}
+            <ListItem data={data.bookmarks.data} collection={collection} />
         </Container>
     );
 }
