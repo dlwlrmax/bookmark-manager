@@ -2,9 +2,6 @@
   "name": "bookmark-manager",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-	  "npm":"12.18.2"
-  },
   "dependencies": {
     "@ant-design/icons": "^4.3.0",
     "@apollo/client": "^3.3.4",
