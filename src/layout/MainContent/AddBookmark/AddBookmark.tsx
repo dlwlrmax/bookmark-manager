@@ -28,7 +28,9 @@ const CREATE_ITEM = gql`
 export default function AddBookmark() {
     const [form] = Form.useForm();
     const [isAddModalVisible, setAddNewVisible] = useState<boolean>(false);
-    const [createBookmark] = useMutation(CREATE_ITEM, { refetchQueries: [{ query: GET_BOOKMARK }] });
+    const [createBookmark] = useMutation(CREATE_ITEM, {
+        refetchQueries: [{ query: GET_BOOKMARK }],
+    });
 
     const handleAddNewCancel = () => {
         setAddNewVisible(false);
@@ -53,7 +55,6 @@ export default function AddBookmark() {
                         .validateFields()
                         .then(values => {
                             form.resetFields();
-
                             createBookmark({ variables: { data: { title: values.title, url: values.url, collection: values.collection } } });
                             setAddNewVisible(false);
                         })
@@ -65,7 +66,6 @@ export default function AddBookmark() {
                     <Form.Item name='url' label='Url' rules={[{ required: true, message: 'Please input url' }]}>
                         <Input placeholder='https://www.example.com' />
                     </Form.Item>
-
                     <Form.Item name='title' label='Title' rules={[{ required: true, message: 'Please input Title' }]}>
                         <Input placeholder='example.com' />
                     </Form.Item>

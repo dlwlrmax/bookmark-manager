@@ -25,7 +25,7 @@ const Title = styled.div`
     text-transform: capitalize;
 `;
 
-const GET_BOOKMARK = gql`
+export const GET_BOOKMARK = gql`
     {
         bookmarks {
             data {

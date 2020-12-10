@@ -6,7 +6,7 @@ import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/react-hooks';
 const { confirm } = Modal;
 
-const DELETE_ITEM = gql`
+export const DELETE_ITEM = gql`
     mutation DeleteBookmark($id: ID!) {
         deleteBookmark(id: $id) {
             _id

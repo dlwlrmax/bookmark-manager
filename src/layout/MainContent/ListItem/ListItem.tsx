@@ -56,7 +56,7 @@ export default function ListItem({ data, collection }: Props) {
     }, [collection, data]);
     return (
         <ListContainer>
-            {bookmark.map((item: any, index: number) => {
+            {bookmark.map((item: BOOKMARK, index: number) => {
                 return (
                     <Item key={index}>
                         <div className='content'>

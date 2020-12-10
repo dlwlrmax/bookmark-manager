@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { FormOutlined, HeartOutlined } from '@ant-design/icons';
 import CollectionContext from '../../context/CollectionContext';
 import Item from './Item/Item';
-const BOOKMARKS_QUERY = gql`
+export const BOOKMARKS_QUERY = gql`
     {
         bookmarks {
             data {
