@@ -4,7 +4,7 @@ import { client } from './client';
 import { PageLayout } from './layout/PageLayout';
 import CollectionContext from './context/CollectionContext';
 function App() {
-    const [collection, setCollection] = useState('');
+    const [collection, setCollection] = useState<string>('');
     return (
         <CollectionContext.Provider value={{ collection: collection, setCollection: setCollection }}>
             <ApolloProvider client={client}>
